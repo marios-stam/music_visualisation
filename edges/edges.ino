@@ -37,25 +37,22 @@ void setup() {
     FastLED.show();
 }
 
-int vol,i,peak=0;
+int vol,i;
 void loop(){
   if(Serial.available()) vol=Serial.read();
-  peak=vol>peak?MIDDLE+vol:peak;
-  if(millis()%100) { peak-=1; }
-  FillLEDsFromPaletteColors(0,MIDDLE,constrain(MIDDLE+vol,0,MIDDLE*2));
   
-  for (i=MIDDLE+vol;i<NUM_LEDS;i++){
+  FillLEDsFromPaletteColors(0,0,constrain(vol,0,MIDDLE));
+  for (i=vol;i<MIDDLE;i++){
       leds[i] = CRGB::Black; 
   } 
-  leds[peak]=CRGB::Pink;
   mirroring();
   //FastLED.setBrightness(set_Brightness(vol));
   FastLED.show();
 }
 
 void mirroring(){
-  for(int i=1;i<MIDDLE;i++){
-    leds[MIDDLE-i]=leds[MIDDLE+i];
+  for(int i=NUM_LEDS;i>MIDDLE+1;i--){
+    leds[i]=leds[NUM_LEDS-i];
   }
 }
 
@@ -75,7 +72,7 @@ int set_Brightness(int x) {
 
 
 void FillLEDsFromPaletteColors( uint8_t colorIndex,int start,int telos){
-    uint8_t brightness =100;
+    uint8_t brightness =200;
     
     for( int i = start; i < telos; i++) {
         leds[i] = ColorFromPalette( currentPalette, colorIndex, brightness, currentBlending);
